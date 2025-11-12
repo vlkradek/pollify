@@ -9,7 +9,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Pollify - Create and Vote on Polls",
   description: "Vote on existing polls or create an account to make your own",
-  generator: "v0.app",
   icons: {
     icon: [
       {
