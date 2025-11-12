@@ -1,6 +1,6 @@
 # Pollify
 
-Produkční URL: [pollify.vercel.app](https://pollify.vercel.app/)
+Produkční URL: [pollify-application.vercel.app](https://pollify-application.vercel.app/)
 
 Github repozitář: [github.com/vlkradek/pollify](https://github.com/vlkradek/pollify)
 
