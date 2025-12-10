@@ -1,0 +1,245 @@
+"use client"
+
+import type React from "react"
+import Link from "next/link"
+import { useState } from "react"
+
+interface UserPoll {
+  id: number
+  title: string
+  votes: number
+}
+
+interface AccountSettingsProps {
+  user: {
+    name: string
+    email: string
+    polls: UserPoll[]
+  }
+}
+
+export default function AccountSettings({ user }: AccountSettingsProps) {
+  const [name, setName] = useState(user.name)
+  const [email, setEmail] = useState(user.email)
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Uncomment below to update user profile in database
+    /*
+    try {
+      const userId = 1 // Get from session/auth
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email }),
+      })
+      
+      if (response.ok) {
+        console.log('Profile updated successfully')
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error)
+    }
+    */
+
+    // Mock behavior for now
+    console.log("Updating profile:", { name, email })
+  }
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (newPassword !== confirmPassword) {
+      console.log("Passwords don't match")
+      return
+    }
+
+    // Uncomment below to change password in database
+    /*
+    try {
+      const userId = 1 // Get from session/auth
+      const response = await fetch(`/api/users/${userId}/password`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      })
+      
+      if (response.ok) {
+        console.log('Password changed successfully')
+        setCurrentPassword("")
+        setNewPassword("")
+        setConfirmPassword("")
+      }
+    } catch (error) {
+      console.error('Error changing password:', error)
+    }
+    */
+
+    // Mock behavior for now
+    console.log("Changing password")
+    setCurrentPassword("")
+    setNewPassword("")
+    setConfirmPassword("")
+  }
+
+  return (
+    <main className="min-h-screen bg-background">
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="mb-2 font-sans text-3xl font-bold text-foreground">Account Settings</h1>
+          <p className="text-muted-foreground">Manage your profile and account preferences</p>
+        </div>
+
+        <div className="space-y-6">
+          {/* Profile Information */}
+          {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h2 className="mb-4 font-sans text-xl font-semibold text-card-foreground">Profile Information</h2>
+            <form onSubmit={handleUpdateProfile} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="mb-2 block text-sm font-medium text-foreground">
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="mb-2 block text-sm font-medium text-foreground">
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="h-10 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Save Changes
+              </button>
+            </form>
+          </div> */}
+
+          {/* Change Password */}
+          {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h2 className="mb-4 font-sans text-xl font-semibold text-card-foreground">Change Password</h2>
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label htmlFor="currentPassword" className="mb-2 block text-sm font-medium text-foreground">
+                  Current Password
+                </label>
+                <input
+                  id="currentPassword"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="newPassword" className="mb-2 block text-sm font-medium text-foreground">
+                  New Password
+                </label>
+                <input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-foreground">
+                  Confirm New Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="h-10 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Update Password
+              </button>
+            </form>
+          </div> */}
+
+          {/* My Polls */}
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-sans text-xl font-semibold text-card-foreground">My Polls</h2>
+              <Link
+                href="/create-poll"
+                className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Create New
+              </Link>
+            </div>
+
+            <div className="space-y-3">
+              {user.polls.map((poll) => (
+                <div
+                  key={poll.id}
+                  className="flex items-center justify-between rounded-lg border border-border bg-background p-4"
+                >
+                  <div>
+                    <h3 className="font-medium text-foreground">{poll.title}</h3>
+                    <p className="text-sm text-muted-foreground">{poll.votes} votes</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/poll/${poll.id}`}
+                      className="inline-flex h-8 items-center justify-center rounded-lg border border-input bg-background px-3 text-sm font-medium hover:bg-accent"
+                    >
+                      View
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Danger Zone */}
+          <div className="rounded-lg border border-destructive/50 bg-card p-6 shadow-sm">
+            <h2 className="mb-2 font-sans text-xl font-semibold text-destructive">Danger Zone</h2>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Once you delete your account, there is no going back. Please be certain.
+            </p>
+            <button className="h-10 rounded-lg border border-destructive bg-destructive/10 px-6 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground">
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}

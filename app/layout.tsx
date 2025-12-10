@@ -1,14 +1,19 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Poppins } from "next/font/google"
+import { Navbar } from "@/components/NavBar"
 import "./globals.css"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+})
 
 export const metadata: Metadata = {
   title: "Pollify - Create and Vote on Polls",
-  description: "Vote on existing polls or create an account to make your own",
+  description: "Democratic polling platform where everyone can participate",
+  generator: "v0.app",
   icons: {
     icon: [
       {
@@ -35,7 +40,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans antialiased`}>
+      <body className={`${poppins.variable} font-sans antialiased`}>
+        <Navbar />
         {children}
       </body>
     </html>
