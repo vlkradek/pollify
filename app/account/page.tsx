@@ -1,10 +1,13 @@
+import { auth } from "@/auth"
 import AccountSettings from "@/components/account-settings"
+import { prisma } from "@/lib/prisma"
+import { notFound } from "next/navigation"
 // import { prisma } from "@/lib/prisma"
 
-export default function AccountPage() {
+export default async function AccountPage() {
   // Uncomment below to fetch real user data from database using Prisma
-  /*
-  const userId = 1 // Get from session/auth
+  const session = await auth()
+  const userId = session?.user?.id
   
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -16,29 +19,10 @@ export default function AccountPage() {
       },
     },
   })
-  
-  const userData = {
-    name: user.name,
-    email: user.email,
-    polls: user.polls.map(poll => ({
-      id: poll.id,
-      title: poll.title,
-      votes: poll.votes.length,
-    })),
+
+  if (!user) {
+    return notFound() //TODO: redirect to login page instead
   }
   
-  return <AccountSettings user={userData} />
-  */
-
-  // Mock data for now
-  const userData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    polls: [
-      { id: 1, title: "My first poll about programming", votes: 45 },
-      { id: 2, title: "Favorite framework survey", votes: 78 },
-    ],
-  }
-
-  return <AccountSettings user={userData} />
+  return <AccountSettings user={user} />
 }

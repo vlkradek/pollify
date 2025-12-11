@@ -1,35 +1,29 @@
-"use client"
+"use client";
 
-import type React from "react"
-import Link from "next/link"
-import { useState } from "react"
+import type React from "react";
+import Link from "next/link";
+import { useState } from "react";
+import { signOut } from "next-auth/react";
+import { UserFullType } from "@/lib/schemas";
 
 interface UserPoll {
-  id: number
-  title: string
-  votes: number
+    id: number;
+    title: string;
+    votes: number;
 }
 
-interface AccountSettingsProps {
-  user: {
-    name: string
-    email: string
-    polls: UserPoll[]
-  }
-}
+export default function AccountSettings({ user }: { user: UserFullType }) {
+    const [name, setName] = useState(user.name);
+    const [email, setEmail] = useState(user.email);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-export default function AccountSettings({ user }: AccountSettingsProps) {
-  const [name, setName] = useState(user.name)
-  const [email, setEmail] = useState(user.email)
-  const [currentPassword, setCurrentPassword] = useState("")
-  const [newPassword, setNewPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
+    const handleUpdateProfile = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    // Uncomment below to update user profile in database
-    /*
+        // Uncomment below to update user profile in database
+        /*
     try {
       const userId = 1 // Get from session/auth
       const response = await fetch(`/api/users/${userId}`, {
@@ -46,19 +40,19 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
     }
     */
 
-    // Mock behavior for now
-    console.log("Updating profile:", { name, email })
-  }
+        // Mock behavior for now
+        console.log("Updating profile:", { name, email });
+    };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (newPassword !== confirmPassword) {
-      console.log("Passwords don't match")
-      return
-    }
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newPassword !== confirmPassword) {
+            console.log("Passwords don't match");
+            return;
+        }
 
-    // Uncomment below to change password in database
-    /*
+        // Uncomment below to change password in database
+        /*
     try {
       const userId = 1 // Get from session/auth
       const response = await fetch(`/api/users/${userId}/password`, {
@@ -78,24 +72,50 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
     }
     */
 
-    // Mock behavior for now
-    console.log("Changing password")
-    setCurrentPassword("")
-    setNewPassword("")
-    setConfirmPassword("")
-  }
+        // Mock behavior for now
+        console.log("Changing password");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+    };
 
-  return (
-    <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="mb-2 font-sans text-3xl font-bold text-foreground">Account Settings</h1>
-          <p className="text-muted-foreground">Manage your profile and account preferences</p>
-        </div>
-
-        <div className="space-y-6">
-          {/* Profile Information */}
-          {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+    return (
+        <main className="min-h-screen bg-background">
+            <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+                <div className="mb-8 flex items-start justify-between">
+                    <div>
+                        <h1 className="mb-2 font-sans text-3xl font-bold text-foreground">
+                            Account Settings
+                        </h1>
+                        <p className="text-muted-foreground">
+                            Manage your profile and account preferences
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => signOut()}
+                        className="flex h-10 items-center gap-2 rounded-lg border cursor-pointer border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-accent"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+                <div className="space-y-6">
+                    {/* Profile Information */}
+                    {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <h2 className="mb-4 font-sans text-xl font-semibold text-card-foreground">Profile Information</h2>
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div>
@@ -135,8 +155,8 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
             </form>
           </div> */}
 
-          {/* Change Password */}
-          {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+                    {/* Change Password */}
+                    {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <h2 className="mb-4 font-sans text-xl font-semibold text-card-foreground">Change Password</h2>
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
@@ -193,53 +213,67 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
             </form>
           </div> */}
 
-          {/* My Polls */}
-          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-sans text-xl font-semibold text-card-foreground">My Polls</h2>
-              <Link
-                href="/create-poll"
-                className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Create New
-              </Link>
-            </div>
+                    {/* My Polls */}
+                    <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="font-sans text-xl font-semibold text-card-foreground">
+                                My Polls
+                            </h2>
+                            <Link
+                                href="/account/create-poll"
+                                className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                            >
+                                Create New
+                            </Link>
+                        </div>
 
-            <div className="space-y-3">
-              {user.polls.map((poll) => (
-                <div
-                  key={poll.id}
-                  className="flex items-center justify-between rounded-lg border border-border bg-background p-4"
-                >
-                  <div>
-                    <h3 className="font-medium text-foreground">{poll.title}</h3>
-                    <p className="text-sm text-muted-foreground">{poll.votes} votes</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/poll/${poll.id}`}
-                      className="inline-flex h-8 items-center justify-center rounded-lg border border-input bg-background px-3 text-sm font-medium hover:bg-accent"
-                    >
-                      View
-                    </Link>
-                  </div>
+                        <div className="space-y-3">
+                            {user.polls.length === 0 && (
+                                <p className="text-sm text-muted-foreground">
+                                    You have not created any polls yet.
+                                </p>
+                            )}
+                            {user.polls.map((poll) => (
+                                <div
+                                    key={poll.id}
+                                    className="flex items-center justify-between rounded-lg border border-border bg-background p-4"
+                                >
+                                    <div>
+                                        <h3 className="font-medium text-foreground">
+                                            {poll.title}
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground">
+                                            {poll.votes.length} votes
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Link
+                                            href={`/polls/${poll.id}`}
+                                            className="inline-flex h-8 items-center justify-center rounded-lg border border-input bg-background px-3 text-sm font-medium hover:bg-accent"
+                                        >
+                                            View
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Danger Zone */}
+                    <div className="rounded-lg border border-destructive/50 bg-card p-6 shadow-sm">
+                        <h2 className="mb-2 font-sans text-xl font-semibold text-destructive">
+                            Danger Zone
+                        </h2>
+                        <p className="mb-4 text-sm text-muted-foreground">
+                            Once you delete your account, there is no going
+                            back. Please be certain.
+                        </p>
+                        <button className="h-10 rounded-lg border border-destructive bg-destructive/10 px-6 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                            Delete Account
+                        </button>
+                    </div>
                 </div>
-              ))}
             </div>
-          </div>
-
-          {/* Danger Zone */}
-          <div className="rounded-lg border border-destructive/50 bg-card p-6 shadow-sm">
-            <h2 className="mb-2 font-sans text-xl font-semibold text-destructive">Danger Zone</h2>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Once you delete your account, there is no going back. Please be certain.
-            </p>
-            <button className="h-10 rounded-lg border border-destructive bg-destructive/10 px-6 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground">
-              Delete Account
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-  )
+        </main>
+    );
 }

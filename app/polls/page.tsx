@@ -1,18 +1,21 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { PollFullType } from "@/lib/schemas";
 import Link from "next/link";
 
 export default async function AllPollsPage() {
-  const polls:PollFullType[] = await prisma.poll.findMany({
-    include:{
-        options: {
-            include: {
-                votes: true
-            }
+
+    const session = await auth();
+    const polls: PollFullType[] = await prisma.poll.findMany({
+        include: {
+            options: {
+                include: {
+                    votes: true,
+                },
+            },
         },
-    },
-    orderBy: { createdAt: 'desc' }
-  })
+        orderBy: { createdAt: "desc" },
+    });
   
 
 
@@ -48,8 +51,13 @@ export default async function AllPollsPage() {
                             <Link
                                 key={poll.id}
                                 href={`/polls/${poll.id}`}
-                                className="group rounded-lg border border-border bg-card p-6 transition-all hover:border-foreground/20 hover:shadow-lg"
+                                className="group rounded-lg relative border border-border bg-card p-6 transition-all hover:border-foreground/20 hover:shadow-lg"
                             >
+                                {session?.user?.id === poll.creatorId && (
+                                    <span className="absolute top-3 right-3 text-xs bg-primary/60 text-white px-2 py-1 rounded-md">
+                                        Vytvořeno vámi
+                                    </span>
+                                )}
                                 <h3 className="mb-2 text-balance font-sans text-lg font-semibold text-card-foreground group-hover:text-foreground">
                                     {poll.title}
                                 </h3>

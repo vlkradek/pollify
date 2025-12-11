@@ -4,11 +4,19 @@ import type React from "react"
 
 import Link from "next/link"
 import { useState } from "react"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 export default function CreatePollPage() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [options, setOptions] = useState(["", ""])
+
+  const router = useRouter();
+
+  const { data: session } = useSession();
+  console.log("Session data:", session);
+  const creatorId = session?.user?.id
 
   const addOption = () => {
     if (options.length < 10) {
@@ -30,6 +38,21 @@ export default function CreatePollPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const res = await fetch("/api/polls", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, options, creatorId  }),
+    })
+    if (res.ok) {
+        router.push("/account");
+        
+    } else {
+        console.error("Failed to create poll")
+    }
+
+
+    console.log(res)
     // TODO: Implement poll creation logic
     console.log("[v0] Creating poll:", { title, description, options: options.filter((o) => o.trim()) })
   }
@@ -134,7 +157,7 @@ export default function CreatePollPage() {
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"
-                className="h-10 flex-1 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                className="h-10 flex-1 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 cursor-pointer"
               >
                 Create Poll
               </button>

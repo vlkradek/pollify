@@ -9,3 +9,13 @@ export type PollFullType = Prisma.PollGetPayload<{
         },
     }
 }>
+
+export type UserFullType = Prisma.UserGetPayload<{
+    include: {
+        polls: {
+            include: {
+                votes: true
+            }
+        }
+    }
+}>

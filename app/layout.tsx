@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import { Navbar } from "@/components/NavBar"
 import "./globals.css"
+import { SessionProvider } from "next-auth/react"
+import { Toaster } from "sonner"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -38,12 +40,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${poppins.variable} font-sans antialiased`}>
-        <Navbar />
-        {children}
-      </body>
-    </html>
-  )
+    return (
+        <html lang="en">
+            <body className={`${poppins.variable} font-sans antialiased`}>
+                <SessionProvider>
+                    <Navbar />
+                    <Toaster position="top-right" />
+                    {children}
+                </SessionProvider>
+            </body>
+        </html>
+    );
 }

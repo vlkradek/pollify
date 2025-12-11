@@ -1,10 +1,13 @@
-"use client"
+// "use client"
 
+import { auth } from "@/auth"
 import Link from "next/link"
 import { useState } from "react"
 
-export function Navbar() {
-  const [searchQuery, setSearchQuery] = useState("")
+export async function Navbar() {
+  // const [searchQuery, setSearchQuery] = useState("")
+
+  const session = await auth()
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md shadow-sm">
@@ -17,7 +20,7 @@ export function Navbar() {
             <span className="font-sans text-xl font-bold text-foreground">Pollify</span>
           </Link>
 
-          <div className="hidden flex-1 max-w-md md:flex">
+          {/* <div className="hidden flex-1 max-w-md md:flex">
             <div className="relative w-full">
               <input
                 type="text"
@@ -40,7 +43,7 @@ export function Navbar() {
                 />
               </svg>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex items-center gap-3">
             <Link
@@ -53,7 +56,7 @@ export function Navbar() {
               href="/login"
               className="rounded-md border-2 border-primary/30 bg-background px-5 py-2 text-sm font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
             >
-              Login
+              {session ? "My account" : "Login"}
             </Link>
           </div>
         </div>

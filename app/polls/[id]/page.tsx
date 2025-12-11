@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { useState } from "react";
 import PollVoting from "./PollVoting";
 import { PollFullType } from "@/lib/schemas";
+import { auth } from "@/auth";
+import { Vote } from "@prisma/client";
 
 interface Option {
     id: number;
@@ -53,6 +55,7 @@ export default async function PollPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
+    const session = await auth();
 
     const poll: PollFullType | null = await prisma.poll.findUnique({
         where: { id: parseInt(id) },
@@ -62,6 +65,13 @@ export default async function PollPage({
                     votes: true,
                 },
             },
+        },
+    });
+
+    const userVote: Vote | null = await prisma.vote.findFirst({
+        where: {
+            pollId: parseInt(id),
+            userId: session?.user?.id || "",
         },
     });
     if (!poll) {
@@ -87,5 +97,22 @@ export default async function PollPage({
 
     // Using mock data for now
 
-    return <PollVoting poll={poll as PollFullType} />;
+    return (
+        <>
+            {/* <main className="bg-background mx-auto max-w-3xl mt-12 sm:px-6 lg:px-8">
+                {poll.creatorId === session?.user?.id && (
+                    <p className="w-full border-2 text-sm px-5 py-3 mb-4 border-primary/80 bg-primary/10 rounded-md">
+                        Tohle je vaše anketa. Nemůžete hlasovat ve vlastní
+                        anketě, ale můžete vidět výsledky.
+                    </p>
+                    )}
+            </main> */}
+
+            <PollVoting
+                poll={poll as PollFullType}
+                userId={session?.user?.id ?? null}
+                hasVoted={userVote !== null}
+            />
+        </>
+    );
 }
