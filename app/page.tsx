@@ -1,8 +1,12 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { PollFullType } from "@/lib/schemas";
 import Link from "next/link";
 
 export default async function HomePage() {
+
+    const session = await auth();
+
     const topPolls: PollFullType[] = await prisma.poll.findMany({
         where: {
             isActive: true,
@@ -43,7 +47,7 @@ export default async function HomePage() {
                         </p>
                         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                             <Link
-                                href="/login"
+                                href={session ? "/account/create-poll" : "/login"}
                                 className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all"
                             >
                                 Vytvořit anketu
