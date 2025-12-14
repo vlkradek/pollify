@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { UserFullType } from "@/lib/schemas";
+import { toast } from "sonner";
 
 interface UserPoll {
     id: number;
@@ -13,70 +14,89 @@ interface UserPoll {
 }
 
 export default function AccountSettings({ user }: { user: UserFullType }) {
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState(user.email);
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [pollsActive, setPollsActive] = useState<Record<number, boolean>>(
+        user.polls.reduce(
+            (acc, poll) => ({ ...acc, [poll.id]: poll.isActive }),
+            {}
+        )
+    );
 
-    const handleUpdateProfile = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleDeletePoll = async (pollId: number) => {
+        try {
+            const response = await fetch(`/api/polls/${pollId}`, {
+                method: "DELETE",
+            });
 
-        // Uncomment below to update user profile in database
-        /*
-    try {
-      const userId = 1 // Get from session/auth
-      const response = await fetch(`/api/users/${userId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email }),
-      })
-      
-      if (response.ok) {
-        console.log('Profile updated successfully')
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error)
-    }
-    */
-
-        // Mock behavior for now
-        console.log("Updating profile:", { name, email });
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                console.error("Error deleting poll");
+            }
+        } catch (error) {
+            console.error("Error deleting poll:", error);
+        }
     };
 
-    const handleChangePassword = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (newPassword !== confirmPassword) {
-            console.log("Passwords don't match");
-            return;
+    const handleTogglePollActive = async (pollId: number) => {
+        const newActiveState = !pollsActive[pollId];
+
+        // Optimistic update
+        setPollsActive((prev) => ({ ...prev, [pollId]: newActiveState }));
+
+        try {
+            const response = await fetch(`/api/polls/${pollId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isActive: newActiveState }),
+            });
+
+            if (!response.ok) {
+                // Revert on error
+                setPollsActive((prev) => ({
+                    ...prev,
+                    [pollId]: !newActiveState,
+                }));
+                console.error("Error updating poll status");
+            } else {
+              toast.success(
+                `Anketa byla nyní ${newActiveState ? "aktivována" : "deaktivována"}.`
+              )
+            }
+        } catch (error) {
+            // Revert on error
+            setPollsActive((prev) => ({ ...prev, [pollId]: !newActiveState }));
+            console.error("Error updating poll status:", error);
         }
 
-        // Uncomment below to change password in database
-        /*
-    try {
-      const userId = 1 // Get from session/auth
-      const response = await fetch(`/api/users/${userId}/password`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currentPassword, newPassword }),
-      })
-      
-      if (response.ok) {
-        console.log('Password changed successfully')
-        setCurrentPassword("")
-        setNewPassword("")
-        setConfirmPassword("")
-      }
-    } catch (error) {
-      console.error('Error changing password:', error)
-    }
-    */
-
         // Mock behavior for now
-        console.log("Changing password");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
+        console.log(
+            `Poll ${pollId} is now ${newActiveState ? "active" : "inactive"}`
+        );
+    };
+
+    const handleDelete = async () => {
+        const confirmed = window.confirm(
+            "Jste si jisti, že chcete smazat svůj účet? Tuto akci nelze vrátit."
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch("/api/user", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (response.ok) {
+                await signOut({
+                    callbackUrl: "/", // 👈 redirect after delete
+                });
+            } else {
+                console.error("Error deleting account:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error deleting account:", error);
+        }
     };
 
     return (
@@ -85,10 +105,10 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                 <div className="mb-8 flex items-start justify-between">
                     <div>
                         <h1 className="mb-2 font-sans text-3xl font-bold text-foreground">
-                            Account Settings
+                            Nastavení účtu
                         </h1>
                         <p className="text-muted-foreground">
-                            Manage your profile and account preferences
+                            Spravujte svůj své ankety
                         </p>
                     </div>
                     <button
@@ -110,7 +130,7 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                             <polyline points="16 17 21 12 16 7" />
                             <line x1="21" y1="12" x2="9" y2="12" />
                         </svg>
-                        Logout
+                        Odhlásit se
                     </button>
                 </div>
                 <div className="space-y-6">
@@ -217,20 +237,20 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                     <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="font-sans text-xl font-semibold text-card-foreground">
-                                My Polls
+                                Moje ankety
                             </h2>
                             <Link
                                 href="/account/create-poll"
                                 className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                             >
-                                Create New
+                                Vytvořit anketu
                             </Link>
                         </div>
 
                         <div className="space-y-3">
                             {user.polls.length === 0 && (
                                 <p className="text-sm text-muted-foreground">
-                                    You have not created any polls yet.
+                                    Ještě jste nevytvořili žádné ankety.
                                 </p>
                             )}
                             {user.polls.map((poll) => (
@@ -238,21 +258,87 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                                     key={poll.id}
                                     className="flex items-center justify-between rounded-lg border border-border bg-background p-4"
                                 >
-                                    <div>
+                                    <div className="flex-1">
                                         <h3 className="font-medium text-foreground">
                                             {poll.title}
                                         </h3>
                                         <p className="text-sm text-muted-foreground">
-                                            {poll.votes.length} votes
+                                            {poll.votes.length} hlasů
                                         </p>
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm text-muted-foreground">
+                                                {pollsActive[poll.id]
+                                                    ? "Aktivní"
+                                                    : "Neaktivní"}
+                                            </span>
+                                            <button
+                                                onClick={() =>
+                                                    handleTogglePollActive(
+                                                        poll.id
+                                                    )
+                                                }
+                                                role="switch"
+                                                aria-checked={
+                                                    pollsActive[poll.id]
+                                                }
+                                                className={`relative cursor-pointer inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                                                    pollsActive[poll.id]
+                                                        ? "bg-primary"
+                                                        : "bg-input"
+                                                }`}
+                                            >
+                                                <span
+                                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                                        pollsActive[poll.id]
+                                                            ? "translate-x-6"
+                                                            : "translate-x-1"
+                                                    }`}
+                                                />
+                                            </button>
+                                        </div>
                                         <Link
                                             href={`/polls/${poll.id}`}
                                             className="inline-flex h-8 items-center justify-center rounded-lg border border-input bg-background px-3 text-sm font-medium hover:bg-accent"
                                         >
-                                            View
+                                            Zobrazit
                                         </Link>
+                                        <button
+                                            onClick={() =>
+                                                handleDeletePoll(poll.id)
+                                            }
+                                            className="inline-flex h-8 cursor-pointer w-8 items-center justify-center rounded-lg border border-destructive/50 bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                            aria-label="Smazat hlasování"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                <line
+                                                    x1="10"
+                                                    y1="11"
+                                                    x2="10"
+                                                    y2="17"
+                                                />
+                                                <line
+                                                    x1="14"
+                                                    y1="11"
+                                                    x2="14"
+                                                    y2="17"
+                                                />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             ))}
@@ -262,14 +348,17 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                     {/* Danger Zone */}
                     <div className="rounded-lg border border-destructive/50 bg-card p-6 shadow-sm">
                         <h2 className="mb-2 font-sans text-xl font-semibold text-destructive">
-                            Danger Zone
+                            Smazat účet
                         </h2>
                         <p className="mb-4 text-sm text-muted-foreground">
-                            Once you delete your account, there is no going
-                            back. Please be certain.
+                            Jakmile svůj účet smažete, není cesty zpět. Buďte si
+                            prosím jisti.
                         </p>
-                        <button className="h-10 rounded-lg border border-destructive bg-destructive/10 px-6 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                            Delete Account
+                        <button
+                            onClick={handleDelete}
+                            className="h-10 rounded-lg cursor-pointer border border-destructive bg-destructive/10 px-6 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        >
+                            Smazat účet
                         </button>
                     </div>
                 </div>

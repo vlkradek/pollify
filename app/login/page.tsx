@@ -16,10 +16,10 @@ export default async function LoginPage() {
                 <div className="rounded-lg border border-border bg-card p-8 shadow-sm">
                     <div className="mb-8 text-center">
                         <h1 className="mb-2 font-sans text-2xl font-bold text-card-foreground">
-                            Welcome back
+                            Přihlásit se do Pollify
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Sign in with your Google account to continue
+                            Přihlaste se pomocí svého Google účtu, abyste mohli pokračovat
                         </p>
                     </div>
                     <LoginForm/>

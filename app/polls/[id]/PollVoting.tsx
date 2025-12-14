@@ -101,7 +101,7 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
                             d="M15 19l-7-7 7-7"
                         />
                     </svg>
-                    Back to all polls
+                    Zpět na ankety
                 </Link>
                 {poll.creatorId === userId && (
                     <p className="w-full border-2 text-sm px-5 py-3 mb-4 border-primary/80 bg-primary/10 rounded-md">
@@ -170,12 +170,12 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
                             disabled={selectedOption === null}
                             className="h-10 w-full rounded-lg bg-primary px-4 text-sm font-medium cursor-pointer text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? <Loading /> : "Submit Vote"}
+                            {isLoading ? <Loading /> : "Hlasovat"}
                         </button>
                     )}
 
                     <p className="mt-4 text-center text-sm text-muted-foreground">
-                        {totalVotes} total votes
+                        {totalVotes} celkem hlasů
                     </p>
                 </div>
                 <ShareButton pollId={poll.id} pollTitle={poll.title} />

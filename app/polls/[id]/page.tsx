@@ -74,28 +74,29 @@ export default async function PollPage({
             userId: session?.user?.id || "",
         },
     });
-    if (!poll) {
+
+    const viewable = poll && (poll.isActive || poll.creatorId === session?.user?.id);
+    if (!viewable) {
         return (
             <main className="flex min-h-screen items-center justify-center bg-background">
                 <div className="text-center">
                     <h1 className="mb-2 text-2xl font-bold text-foreground">
-                        Poll not found
+                        Anketa nenalezena
                     </h1>
                     <p className="mb-4 text-muted-foreground">
-                        This poll doesnt exist
+                        Tato anketa nebyla nalezena nebo je neaktivní.
                     </p>
                     <Link
                         href="/polls"
                         className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                     >
-                        Back to Polls
+                        Zpět na ankety
                     </Link>
                 </div>
             </main>
         );
     }
 
-    // Using mock data for now
 
     return (
         <>
