@@ -1,18 +1,15 @@
-import { auth } from "@/auth"; // your NextAuth instance
+// middleware.ts
+import NextAuth from "next-auth";
+import { authConfig } from "@/auth.config";
 
-export default auth(async (req) => {
-  const session = req.auth;
+const { auth } = NextAuth(authConfig);
 
-  // Block unauthenticated users
-  if (!session) {
+export default auth((req) => {
+  if (!req.auth) {
     return Response.redirect(new URL("/login", req.url));
   }
-
-  // allow request to continue
-  return;
 });
 
-// protect /account and subpaths
 export const config = {
   matcher: ["/account/:path*"],
 };
