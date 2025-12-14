@@ -43,7 +43,7 @@ export default async function HomePage() {
                         </p>
                         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                             <Link
-                                href="/signup"
+                                href="/login"
                                 className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all"
                             >
                                 Vytvořit anketu
