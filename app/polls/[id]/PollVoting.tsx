@@ -1,6 +1,7 @@
 "use client";
 
 import Loading from "@/components/loading";
+import ShareButton from "@/components/ShareButton";
 import { PollFullType } from "@/lib/schemas";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -177,6 +178,7 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
                         {totalVotes} total votes
                     </p>
                 </div>
+                <ShareButton pollId={poll.id} pollTitle={poll.title} />
             </div>
         </main>
     );
