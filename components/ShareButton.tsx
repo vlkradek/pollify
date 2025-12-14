@@ -11,7 +11,7 @@ export default function ShareButton({ pollId, pollTitle }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false)
   const [showPlatforms, setShowPlatforms] = useState(false)
 
-  const pollUrl = typeof window !== "undefined" ? `${window.location.origin}/poll/${pollId}` : ""
+  const pollUrl = typeof window !== "undefined" ? `${window.location.origin}/polls/${pollId}` : ""
   const shareText = `Check out this poll: ${pollTitle}`
 
   const handleNativeShare = async () => {
