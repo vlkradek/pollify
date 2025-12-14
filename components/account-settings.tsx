@@ -7,11 +7,6 @@ import { signOut } from "next-auth/react";
 import { UserFullType } from "@/lib/schemas";
 import { toast } from "sonner";
 
-interface UserPoll {
-    id: number;
-    title: string;
-    votes: number;
-}
 
 export default function AccountSettings({ user }: { user: UserFullType }) {
     const [pollsActive, setPollsActive] = useState<Record<number, boolean>>(
@@ -22,6 +17,11 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
     );
 
     const handleDeletePoll = async (pollId: number) => {
+        const confirmed = window.confirm(
+            "Jste si jisti, že chcete smazat tuhle anketu?"
+        );
+
+        if (!confirmed) return;
         try {
             const response = await fetch(`/api/polls/${pollId}`, {
                 method: "DELETE",

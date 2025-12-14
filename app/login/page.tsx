@@ -2,6 +2,13 @@
 import { redirect } from "next/navigation";
 import LoginForm from "./LoginForm";
 import { auth } from "@/auth";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Přihlásit se | Pollify",
+
+}
+
 
 export default async function LoginPage() {
     const session = await auth();

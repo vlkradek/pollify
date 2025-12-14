@@ -6,6 +6,13 @@ import Link from "next/link"
 import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Vytvořit anketu | Pollify",
+
+}
+
 
 export default function CreatePollPage() {
   const [title, setTitle] = useState("")

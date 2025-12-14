@@ -14,9 +14,8 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "Pollify - Create and Vote on Polls",
-  description: "Democratic polling platform where everyone can participate",
-  generator: "v0.app",
+  title: "Pollify",
+  description: "Rychlé ankety pro každého",
   icons: {
     icon: [
       {

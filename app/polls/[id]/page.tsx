@@ -1,53 +1,25 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { useState } from "react";
 import PollVoting from "./PollVoting";
 import { PollFullType } from "@/lib/schemas";
 import { auth } from "@/auth";
 import { Vote } from "@prisma/client";
 
-interface Option {
-    id: number;
-    text: string;
-    votes: number;
+export async function generateMetadata({ params }:{ params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
+  const pollData = await prisma.poll.findUnique({
+    where: { id: parseInt(id) },
+    select: {
+      title: true,
+    },
+  });
+  
+  return {
+    title: `${pollData?.title} | Pollify`,
+    description: `Hlasujte v anketě: ${pollData?.title}`,
+  };
 }
-
-// Mock poll data
-const MOCK_POLLS: Record<
-    string,
-    { title: string; description: string; options: Option[] }
-> = {
-    "1": {
-        title: "Best programming language for beginners?",
-        description:
-            "Help newcomers choose their first programming language to learn",
-        options: [
-            { id: 1, text: "Python", votes: 542 },
-            { id: 2, text: "JavaScript", votes: 423 },
-            { id: 3, text: "Java", votes: 198 },
-            { id: 4, text: "C++", votes: 84 },
-        ],
-    },
-    "2": {
-        title: "Should remote work be the default?",
-        description: "Share your thoughts on the future of work culture",
-        options: [
-            { id: 1, text: "Yes, fully remote", votes: 356 },
-            { id: 2, text: "Hybrid model", votes: 421 },
-            { id: 3, text: "No, office-based", votes: 115 },
-        ],
-    },
-    "3": {
-        title: "Most important skill for developers in 2025",
-        description: "What skill should developers focus on this year?",
-        options: [
-            { id: 1, text: "AI/ML Integration", votes: 789 },
-            { id: 2, text: "System Design", votes: 654 },
-            { id: 3, text: "Cloud Architecture", votes: 432 },
-            { id: 4, text: "DevOps", votes: 228 },
-        ],
-    },
-};
 
 export default async function PollPage({
     params,

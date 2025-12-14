@@ -1,7 +1,13 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { PollFullType } from "@/lib/schemas";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Všechny ankety | Pollify",
+
+}
 
 export default async function AllPollsPage() {
 
