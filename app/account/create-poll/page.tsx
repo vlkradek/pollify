@@ -69,19 +69,19 @@ export default function CreatePollPage() {
           <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to polls
+          Zpět na ankety
         </Link>
 
         {/* Form Card */}
         <div className="rounded-lg border border-border bg-card p-8 shadow-sm">
-          <h1 className="mb-2 font-sans text-3xl font-bold text-card-foreground">Create a New Poll</h1>
-          <p className="mb-8 text-muted-foreground">Gather opinions from the community by creating your poll</p>
+          <h1 className="mb-2 font-sans text-3xl font-bold text-card-foreground">Vytvořit novou anketu</h1>
+          <p className="mb-8 text-muted-foreground">Shromážděte názory ostatních vytvořením své ankety</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
               <label htmlFor="title" className="mb-2 block text-sm font-medium text-foreground">
-                Poll Title
+                Název ankety
               </label>
               <input
                 id="title"
@@ -90,14 +90,14 @@ export default function CreatePollPage() {
                 onChange={(e) => setTitle(e.target.value)}
                 required
                 className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                placeholder="What's your question?"
+                placeholder="Co vás zajímá?"
               />
             </div>
 
             {/* Description */}
             <div>
               <label htmlFor="description" className="mb-2 block text-sm font-medium text-foreground">
-                Description
+                Popis
               </label>
               <textarea
                 id="description"
@@ -105,13 +105,13 @@ export default function CreatePollPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                placeholder="Provide more context for your poll..."
+                placeholder="Poskytněte více informací o své anketě (volitelné)"
               />
             </div>
 
             {/* Options */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">Poll Options</label>
+              <label className="mb-2 block text-sm font-medium text-foreground">Možnosti ankety</label>
               <div className="space-y-3">
                 {options.map((option, index) => (
                   <div key={index} className="flex gap-2">
@@ -121,7 +121,7 @@ export default function CreatePollPage() {
                       onChange={(e) => updateOption(index, e.target.value)}
                       required
                       className="h-10 flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      placeholder={`Option ${index + 1}`}
+                      placeholder={`Možnost ${index + 1}`}
                     />
                     {options.length > 2 && (
                       <button
@@ -148,10 +148,10 @@ export default function CreatePollPage() {
                   <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  Add Option
+                  Přidat možnost
                 </button>
               )}
-              <p className="mt-2 text-xs text-muted-foreground">Add at least 2 options, maximum 10</p>
+              <p className="mt-2 text-xs text-muted-foreground">Přidejte alespoň 2 možnosti, maximálně 10</p>
             </div>
 
             {/* Submit button */}
@@ -160,13 +160,13 @@ export default function CreatePollPage() {
                 type="submit"
                 className="h-10 flex-1 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 cursor-pointer"
               >
-                Create Poll
+                Vytvořit anketu
               </button>
               <Link
-                href="/polls"
+                href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
                 className="inline-flex h-10 items-center justify-center rounded-lg border border-input bg-background px-6 text-sm font-medium hover:bg-accent"
               >
-                Cancel
+                Zrušit
               </Link>
             </div>
           </form>
