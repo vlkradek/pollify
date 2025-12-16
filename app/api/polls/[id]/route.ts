@@ -6,7 +6,7 @@ const ManagePollParamsSchema = z.object({
     id: z.string().regex(/^\d+$/),
 });
 
-export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
 
