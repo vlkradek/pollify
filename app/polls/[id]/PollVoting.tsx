@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: string | null, hasVoted: boolean }) => {
+const PollVoting = ({ poll, userId, hasVoted, creatorName }: { poll: PollFullType, userId: string | null, hasVoted: boolean, creatorName: string | null }) => {
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const { data: session } = useSession();
     const [showResults, setShowResults] = useState<boolean>(poll.creatorId === userId || hasVoted);
@@ -76,7 +76,8 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
                 </Link>
                 {poll.creatorId === userId && (
                     <p className="w-full border-2 text-sm px-5 py-3 mb-4 border-primary/80 bg-primary/10 rounded-md">
-                        Tohle je vaše anketa. Nemůžete hlasovat ve vlastní anketě, ale můžete vidět výsledky.
+                        Tohle je vaše anketa. Nemůžete hlasovat ve vlastní
+                        anketě, ale můžete vidět výsledky.
                     </p>
                 )}
 
@@ -104,7 +105,7 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
                                         setSelectedOption(option.id)
                                     }
                                     disabled={showResults}
-                                    className={`relative w-full overflow-hidden rounded-lg border p-4 text-left transition-all ${
+                                    className={`relative w-full cursor-pointer overflow-hidden rounded-lg border p-4 text-left transition-all ${
                                         showResults
                                             ? "cursor-default"
                                             : isSelected
@@ -145,9 +146,19 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
                         </button>
                     )}
 
-                    <p className="mt-4 text-center text-sm text-muted-foreground">
-                        {totalVotes} celkem hlasů
-                    </p>
+                    <div className="flex justify-between items-center mt-4">
+                        <p className=" text-center text-sm text-muted-foreground">
+                            {totalVotes} celkem hlasů
+                        </p>
+                        {creatorName && (
+                            <p className=" text-sm text-muted-foreground">
+                                Autor ankety:{" "}
+                                <span className="font-semibold text-foreground">
+                                    {creatorName}
+                                </span>
+                            </p>
+                        )}
+                    </div>
                 </div>
                 <ShareButton pollId={poll.id} pollTitle={poll.title} />
             </div>

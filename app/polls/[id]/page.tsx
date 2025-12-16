@@ -47,6 +47,11 @@ export default async function PollPage({
         },
     });
 
+    const creator = await prisma.user.findUnique({
+        where: { id: poll?.creatorId || "" },
+        select: { name: true },
+    });
+
     const viewable =
         poll && (poll.isActive || poll.creatorId === session?.user?.id);
     if (!viewable) {
@@ -75,6 +80,7 @@ export default async function PollPage({
             poll={poll as PollFullType}
             userId={session?.user?.id ?? null}
             hasVoted={userVote !== null}
+            creatorName={creator?.name || null}
         />
     );
 }
