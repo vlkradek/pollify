@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 }
 
 export default async function AllPollsPage() {
-
     const session = await auth();
     const polls: PollFullType[] = await prisma.poll.findMany({
         where: {
@@ -26,8 +25,6 @@ export default async function AllPollsPage() {
         orderBy: { createdAt: "desc" },
     });
   
-
-
     return (
         <main className="min-h-screen bg-background">
             <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -44,7 +41,7 @@ export default async function AllPollsPage() {
                     <div className="flex items-center justify-center py-12">
                         <div className="text-center">
                             <p className="mb-4 text-muted-foreground">
-                                Žádné ankety nebyly nalezeny
+                                Žádné aktivní ankety nebyly nalezeny
                             </p>
                             <Link
                                 href="/create-poll"

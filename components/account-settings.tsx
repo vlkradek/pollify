@@ -130,7 +130,7 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                             <polyline points="16 17 21 12 16 7" />
                             <line x1="21" y1="12" x2="9" y2="12" />
                         </svg>
-                        Odhlásit se
+                        <div className="max-sm:hidden">Odhlásit se</div>
                     </button>
                 </div>
                 <div className="space-y-6">
@@ -256,7 +256,7 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                             {user.polls.map((poll) => (
                                 <div
                                     key={poll.id}
-                                    className="flex items-center justify-between rounded-lg border border-border bg-background p-4"
+                                    className="flex sm:items-center flex-col sm:flex-row justify-between rounded-lg border border-border bg-background p-4"
                                 >
                                     <div className="flex-1">
                                         <h3 className="font-medium text-foreground">

@@ -4,7 +4,6 @@ import { PollFullType } from "@/lib/schemas";
 import Link from "next/link";
 
 export default async function HomePage() {
-
     const session = await auth();
 
     const topPolls: PollFullType[] = await prisma.poll.findMany({
@@ -18,9 +17,11 @@ export default async function HomePage() {
                 },
             },
         },
-        orderBy: { votes: {
-            _count: "desc"
-        } },
+        orderBy: {
+            votes: {
+                _count: "desc",
+            },
+        },
         take: 4,
     });
 
@@ -47,7 +48,9 @@ export default async function HomePage() {
                         </p>
                         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                             <Link
-                                href={session ? "/account/create-poll" : "/login"}
+                                href={
+                                    session ? "/account/create-poll" : "/login"
+                                }
                                 className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all"
                             >
                                 Vytvořit anketu
@@ -154,49 +157,65 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            <section className="bg-background">
-                <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-                    <div className="mb-8 flex items-center justify-between">
-                        <h2 className="font-sans text-3xl font-bold text-foreground">
-                            Vybrané ankety
-                        </h2>
-                        <Link
-                            href="/polls"
-                            className="text-sm font-semibold text-primary hover:text-primary/80"
-                        >
-                            Procházet všechny →
-                        </Link>
-                    </div>
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {topPolls.map((poll) => (
+            {topPolls.length > 0 && (
+                <section className="bg-background">
+                    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+                        <div className="mb-8 flex items-center justify-between">
+                            <h2 className="font-sans text-3xl font-bold text-foreground">
+                                Vybrané ankety
+                            </h2>
                             <Link
-                                key={poll.id}
-                                href={`/polls/${poll.id}`}
-                                className="group rounded-md border-2 border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
+                                href="/polls"
+                                className="text-sm font-semibold text-primary hover:text-primary/80"
                             >
-                                <h3 className="mb-4 text-balance font-sans text-lg font-semibold text-card-foreground group-hover:text-primary">
-                                    {poll.title}
-                                </h3>
-                                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                                    <span>{(() => {
-                                        const totalVotes = poll.options.reduce((acc, option) => acc + option.votes.length, 0);
-                                        if (totalVotes === 1) {
-                                            return "1 hlas";
-                                        } else if(totalVotes === 2){
-                                            return `${totalVotes} hlasy`;
-                                        } else {
-                                            return `${totalVotes} hlasů`;
-                                        }
-                                    })()}</span>
-                                    <span>
-                                        {poll.options.length}{" "}
-                                        {poll.options.length === 1 ? "možnost" : poll.options.length >= 2 && poll.options.length <= 4 ? "možnosti" : "možností"}</span>
-                                </div>
+                                Všechny →
                             </Link>
-                        ))}
+                        </div>
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {topPolls.map((poll) => (
+                                <Link
+                                    key={poll.id}
+                                    href={`/polls/${poll.id}`}
+                                    className="group rounded-md border-2 border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
+                                >
+                                    <h3 className="mb-4 text-balance font-sans text-lg font-semibold text-card-foreground group-hover:text-primary">
+                                        {poll.title}
+                                    </h3>
+                                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                        <span>
+                                            {(() => {
+                                                const totalVotes =
+                                                    poll.options.reduce(
+                                                        (acc, option) =>
+                                                            acc +
+                                                            option.votes.length,
+                                                        0
+                                                    );
+                                                if (totalVotes === 1) {
+                                                    return "1 hlas";
+                                                } else if (totalVotes === 2) {
+                                                    return `${totalVotes} hlasy`;
+                                                } else {
+                                                    return `${totalVotes} hlasů`;
+                                                }
+                                            })()}
+                                        </span>
+                                        <span>
+                                            {poll.options.length}{" "}
+                                            {poll.options.length === 1
+                                                ? "možnost"
+                                                : poll.options.length >= 2 &&
+                                                  poll.options.length <= 4
+                                                ? "možnosti"
+                                                : "možností"}
+                                        </span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             <section className="border-t border-border bg-gradient-to-br from-primary/5 via-accent/30 to-secondary/20">
                 <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">

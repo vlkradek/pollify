@@ -6,6 +6,7 @@ import "./globals.css"
 import { SessionProvider } from "next-auth/react"
 import { Toaster } from "sonner"
 import { Footer } from "@/components/footer"
+import { Analytics } from "@vercel/analytics/next"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default function RootLayout({
                     {children}
                     <Footer/>
                 </SessionProvider>
+                <Analytics />
             </body>
         </html>
     );
