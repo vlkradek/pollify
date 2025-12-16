@@ -6,9 +6,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Přihlásit se | Pollify",
-
 }
-
 
 export default async function LoginPage() {
     const session = await auth();
@@ -30,7 +28,6 @@ export default async function LoginPage() {
                         </p>
                     </div>
                     <LoginForm/>
-
                 </div>
             </div>
         </main>

@@ -47,7 +47,8 @@ export default async function PollPage({
         },
     });
 
-    const viewable = poll && (poll.isActive || poll.creatorId === session?.user?.id);
+    const viewable =
+        poll && (poll.isActive || poll.creatorId === session?.user?.id);
     if (!viewable) {
         return (
             <main className="flex min-h-screen items-center justify-center bg-background">
@@ -69,23 +70,11 @@ export default async function PollPage({
         );
     }
 
-
     return (
-        <>
-            {/* <main className="bg-background mx-auto max-w-3xl mt-12 sm:px-6 lg:px-8">
-                {poll.creatorId === session?.user?.id && (
-                    <p className="w-full border-2 text-sm px-5 py-3 mb-4 border-primary/80 bg-primary/10 rounded-md">
-                        Tohle je vaše anketa. Nemůžete hlasovat ve vlastní
-                        anketě, ale můžete vidět výsledky.
-                    </p>
-                    )}
-            </main> */}
-
-            <PollVoting
-                poll={poll as PollFullType}
-                userId={session?.user?.id ?? null}
-                hasVoted={userVote !== null}
-            />
-        </>
+        <PollVoting
+            poll={poll as PollFullType}
+            userId={session?.user?.id ?? null}
+            hasVoted={userVote !== null}
+        />
     );
 }

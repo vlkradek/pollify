@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-
+import React from "react"
 import Link from "next/link"
 import { useState } from "react"
 import { useSession } from "next-auth/react"
@@ -16,7 +15,6 @@ export default function CreatePollPage() {
   const router = useRouter();
 
   const { data: session } = useSession();
-  console.log("Session data:", session);
   const creatorId = session?.user?.id
 
   const addOption = () => {
@@ -49,19 +47,13 @@ export default function CreatePollPage() {
         router.push("/account");
         
     } else {
-        console.error("Failed to create poll")
+        console.error("Vytvoření ankety selhalo");
     }
-
-
-    console.log(res)
-    // TODO: Implement poll creation logic
-    console.log("[v0] Creating poll:", { title, description, options: options.filter((o) => o.trim()) })
   }
 
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Back link */}
         <Link
           href="/polls"
           className="mb-6 inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -72,13 +64,11 @@ export default function CreatePollPage() {
           Zpět na ankety
         </Link>
 
-        {/* Form Card */}
         <div className="rounded-lg border border-border bg-card p-8 shadow-sm">
           <h1 className="mb-2 font-sans text-3xl font-bold text-card-foreground">Vytvořit novou anketu</h1>
           <p className="mb-8 text-muted-foreground">Shromážděte názory ostatních vytvořením své ankety</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title */}
             <div>
               <label htmlFor="title" className="mb-2 block text-sm font-medium text-foreground">
                 Název ankety
@@ -94,7 +84,6 @@ export default function CreatePollPage() {
               />
             </div>
 
-            {/* Description */}
             <div>
               <label htmlFor="description" className="mb-2 block text-sm font-medium text-foreground">
                 Popis
@@ -109,7 +98,6 @@ export default function CreatePollPage() {
               />
             </div>
 
-            {/* Options */}
             <div>
               <label className="mb-2 block text-sm font-medium text-foreground">Možnosti ankety</label>
               <div className="space-y-3">
@@ -138,7 +126,6 @@ export default function CreatePollPage() {
                 ))}
               </div>
 
-              {/* Add option button */}
               {options.length < 10 && (
                 <button
                   type="button"
@@ -154,7 +141,6 @@ export default function CreatePollPage() {
               <p className="mt-2 text-xs text-muted-foreground">Přidejte alespoň 2 možnosti, maximálně 10</p>
             </div>
 
-            {/* Submit button */}
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"

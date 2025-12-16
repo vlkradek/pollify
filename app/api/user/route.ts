@@ -7,7 +7,7 @@ export async function DELETE() {
 
   if (!session?.user?.id) {
     return NextResponse.json(
-      { error: "Unauthorized" },
+      { error: "Neoprávněná operace" },
       { status: 401 }
     );
   }
@@ -29,11 +29,11 @@ export async function DELETE() {
       }),
     ]);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error("Account deletion failed:", error);
+    console.error("Vymazání účtu selhalo:", error);
     return NextResponse.json(
-      { error: "Failed to delete account" },
+      { error: "Selhání při mazání účtu" },
       { status: 500 }
     );
   }

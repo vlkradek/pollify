@@ -12,7 +12,7 @@ export default function ShareButton({ pollId, pollTitle }: ShareButtonsProps) {
   const [showPlatforms, setShowPlatforms] = useState(false)
 
   const pollUrl = typeof window !== "undefined" ? `${window.location.origin}/polls/${pollId}` : ""
-  const shareText = `Check out this poll: ${pollTitle}`
+  const shareText = `Hlasuj v této anketě: ${pollTitle}`
 
   const handleNativeShare = async () => {
     if (navigator.share) {
@@ -23,15 +23,12 @@ export default function ShareButton({ pollId, pollTitle }: ShareButtonsProps) {
           url: pollUrl,
         })
       } catch (err) {
-        // User cancelled or error occurred
         if ((err as Error).name !== "AbortError") {
-          console.error("Share failed:", err)
-          // Fallback to showing platform buttons
+          console.error("Sdílení selhalo:", err)
           setShowPlatforms(true)
         }
       }
     } else {
-      // Fallback for browsers that don't support Web Share API
       setShowPlatforms(true)
     }
   }
@@ -42,7 +39,7 @@ export default function ShareButton({ pollId, pollTitle }: ShareButtonsProps) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error("Failed to copy:", err)
+      console.error("Kopírování selhalo:", err)
     }
   }
 

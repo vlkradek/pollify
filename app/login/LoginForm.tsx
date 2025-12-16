@@ -4,14 +4,13 @@ import { signIn } from "next-auth/react";
 
 const LoginForm = () => {
     const handleGoogleSignIn = async () => {
-        // Uncomment below to authenticate with Supabase Google OAuth
         try {
             await signIn("google", {
                 redirect: true,
                 callbackUrl: "/account",
             });
         } catch (error) {
-            console.error("Error during Google sign-in:", error);
+            console.error("Nastala chyba při přihlášení pomocí Google:", error);
         }
     };
     return (

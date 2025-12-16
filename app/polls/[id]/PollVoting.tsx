@@ -5,7 +5,7 @@ import ShareButton from "@/components/ShareButton";
 import { PollFullType } from "@/lib/schemas";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: string | null, hasVoted: boolean }) => {
@@ -15,33 +15,6 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
     const [currentPoll, setCurrentPoll] = useState<PollFullType>(poll);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    // useEffect(() => {
-    //     console.log(showResults);
-    // }, [showResults]);
-    // useEffect(() => {
-    //     const checkUserVote = async () => {
-    //         if (!userId) return;
-    //         try {
-    //             const response = await fetch(
-    //                 `/api/polls/${poll.id}/vote/user`,
-    //                 {
-    //                     method: "POST",
-    //                     headers: { "Content-Type": "application/json" },
-    //                     body: JSON.stringify({ userId }),
-    //                 }
-    //             );
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 if (data.vote.id) {
-    //                     setShowResults(true);
-    //                 }
-    //             }
-    //         } catch (error) {
-    //             console.error("Error checking user vote:", error);
-    //         }
-    //     };
-    //     checkUserVote();
-    // }, []);
 
     const totalVotes = currentPoll.options.reduce(
         (sum, opt) => sum + opt.votes.length,
@@ -63,16 +36,14 @@ const PollVoting = ({ poll, userId, hasVoted }: { poll: PollFullType, userId: st
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         optionId: selectedOption,
-                        userId: session?.user?.id, // Replace with actual user ID from session
+                        userId: session?.user?.id,
                     }),
                 });
 
                 if (response.ok) {
                     setShowResults(true);
                     const data = await response.json();
-                    // console.log("Vote recorded:", data);
                     setCurrentPoll(data.poll);
-                    // Optionally refresh poll data with router.refresh()
                 }
             } catch (error) {
                 console.error("Error submitting vote:", error);

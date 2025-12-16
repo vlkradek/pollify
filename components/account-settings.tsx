@@ -30,17 +30,16 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
             if (response.ok) {
                 window.location.reload();
             } else {
-                console.error("Error deleting poll");
+                console.error("Vymazání ankety selhalo:", response.statusText);
             }
         } catch (error) {
-            console.error("Error deleting poll:", error);
+            console.error("Vymazání ankety selhalo:", error);
         }
     };
 
     const handleTogglePollActive = async (pollId: number) => {
         const newActiveState = !pollsActive[pollId];
 
-        // Optimistic update
         setPollsActive((prev) => ({ ...prev, [pollId]: newActiveState }));
 
         try {
@@ -51,24 +50,21 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
             });
 
             if (!response.ok) {
-                // Revert on error
                 setPollsActive((prev) => ({
                     ...prev,
                     [pollId]: !newActiveState,
                 }));
-                console.error("Error updating poll status");
+                console.error("Aktualizace stavu ankety selhala:", response.statusText);
             } else {
               toast.success(
                 `Anketa byla nyní ${newActiveState ? "aktivována" : "deaktivována"}.`
               )
             }
         } catch (error) {
-            // Revert on error
             setPollsActive((prev) => ({ ...prev, [pollId]: !newActiveState }));
-            console.error("Error updating poll status:", error);
+            console.error("Aktualizace stavu ankety selhala:", error);
         }
 
-        // Mock behavior for now
         console.log(
             `Poll ${pollId} is now ${newActiveState ? "active" : "inactive"}`
         );
@@ -89,13 +85,13 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
 
             if (response.ok) {
                 await signOut({
-                    callbackUrl: "/", // 👈 redirect after delete
+                    callbackUrl: "/",
                 });
             } else {
-                console.error("Error deleting account:", response.statusText);
+                console.error("Vymazání účtu selhalo:", response.statusText);
             }
         } catch (error) {
-            console.error("Error deleting account:", error);
+            console.error("Vymazání účtu selhalo:", error);
         }
     };
 
@@ -134,106 +130,7 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                     </button>
                 </div>
                 <div className="space-y-6">
-                    {/* Profile Information */}
-                    {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 font-sans text-xl font-semibold text-card-foreground">Profile Information</h2>
-            <form onSubmit={handleUpdateProfile} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="mb-2 block text-sm font-medium text-foreground">
-                  Full Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-medium text-foreground">
-                  Email Address
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="h-10 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Save Changes
-              </button>
-            </form>
-          </div> */}
-
-                    {/* Change Password */}
-                    {/* <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 font-sans text-xl font-semibold text-card-foreground">Change Password</h2>
-            <form onSubmit={handleChangePassword} className="space-y-4">
-              <div>
-                <label htmlFor="currentPassword" className="mb-2 block text-sm font-medium text-foreground">
-                  Current Password
-                </label>
-                <input
-                  id="currentPassword"
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  required
-                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="newPassword" className="mb-2 block text-sm font-medium text-foreground">
-                  New Password
-                </label>
-                <input
-                  id="newPassword"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-foreground">
-                  Confirm New Password
-                </label>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="h-10 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Update Password
-              </button>
-            </form>
-          </div> */}
-
-                    {/* My Polls */}
+                    
                     <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="font-sans text-xl font-semibold text-card-foreground">
@@ -345,7 +242,6 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                         </div>
                     </div>
 
-                    {/* Danger Zone */}
                     <div className="rounded-lg border border-destructive/50 bg-card p-6 shadow-sm">
                         <h2 className="mb-2 font-sans text-xl font-semibold text-destructive">
                             Smazat účet
