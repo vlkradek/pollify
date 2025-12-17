@@ -106,6 +106,12 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                         <p className="text-muted-foreground">
                             Spravujte svůj své ankety
                         </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            Přihlášen jako{" "}
+                            <span className="font-medium text-foreground">
+                                {user.email} - {user.name}
+                            </span>
+                        </p>
                     </div>
                     <button
                         onClick={() => signOut()}
