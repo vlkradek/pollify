@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
 import z from "zod";
-import { CreatePollSchema } from "@/app/api/polls/route";
+import { CreatePollSchema } from "@/lib/schemas";
 
 export default function CreatePollPage() {
     const [title, setTitle] = useState("");
