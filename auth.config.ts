@@ -10,21 +10,27 @@ export const authConfig = {
         }),
     ],
 
-
     callbacks: {
-        async jwt({ token, user, account, trigger, session }) {
+        async jwt({ token, user, account }) {
+            // Runs on sign-in
             if (account && user) {
                 token.id = user.id;
+
+                // 👇 THIS IS THE IMPORTANT PART
+                token.isNewUser = account.isNewUser ?? false;
             }
 
             return token;
         },
+
         async session({ session, token }) {
             return {
                 ...session,
                 user: {
                     ...session.user,
                     id: token.id as string,
+                    // 👇 expose to client
+                    isNewUser: token.isNewUser as boolean,
                 },
             };
         },

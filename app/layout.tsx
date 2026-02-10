@@ -7,6 +7,8 @@ import { SessionProvider } from "next-auth/react"
 import { Toaster } from "sonner"
 import { Footer } from "@/components/footer"
 import { Analytics } from "@vercel/analytics/next"
+import 'driver.js/dist/driver.css'
+
 
 const poppins = Poppins({
   subsets: ["latin"],

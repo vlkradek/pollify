@@ -13,6 +13,7 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^6.17.0",
     "@vercel/analytics": "^1.6.1",
+    "driver.js": "^1.4.0",
     "next": "^15.4.8",
     "next-auth": "^5.0.0-beta.30",
     "prisma": "^6.17.0",

@@ -2,40 +2,50 @@
 
 import type React from "react";
 import Link from "next/link";
-import { useState } from "react";
-import { signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 import { UserFullType } from "@/lib/schemas";
 import { toast } from "sonner";
+import { useAccountTour } from "@/lib/useTour";
 
 
 export default function AccountSettings({ user }: { user: UserFullType }) {
-    const [pollsActive, setPollsActive] = useState<Record<number, boolean>>(
-        user.polls.reduce(
-            (acc, poll) => ({ ...acc, [poll.id]: poll.isActive }),
-            {}
-        )
-    );
 
-    const handleDeletePoll = async (pollId: number) => {
-        const confirmed = window.confirm(
-            "Jste si jisti, že chcete smazat tuhle anketu?"
-        );
+      const { data: session } = useSession()
+      const { startTour } = useAccountTour()
 
-        if (!confirmed) return;
-        try {
-            const response = await fetch(`/api/polls/${pollId}`, {
-                method: "DELETE",
-            });
+  useEffect(() => {
+      if (session?.user?.isNewUser) {
+          startTour();
+      }
+  }, [session]);
+  const [pollsActive, setPollsActive] = useState<Record<number, boolean>>(
+      user.polls.reduce(
+          (acc, poll) => ({ ...acc, [poll.id]: poll.isActive }),
+          {}
+      )
+  );
 
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                console.error("Vymazání ankety selhalo:", response.statusText);
-            }
-        } catch (error) {
-            console.error("Vymazání ankety selhalo:", error);
-        }
-    };
+  const handleDeletePoll = async (pollId: number) => {
+      const confirmed = window.confirm(
+          "Jste si jisti, že chcete smazat tuhle anketu?"
+      );
+
+      if (!confirmed) return;
+      try {
+          const response = await fetch(`/api/polls/${pollId}`, {
+              method: "DELETE",
+          });
+
+          if (response.ok) {
+              window.location.reload();
+          } else {
+              console.error("Vymazání ankety selhalo:", response.statusText);
+          }
+      } catch (error) {
+          console.error("Vymazání ankety selhalo:", error);
+      }
+  };
 
     const handleTogglePollActive = async (pollId: number) => {
         const newActiveState = !pollsActive[pollId];
@@ -115,6 +125,7 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                     </div>
                     <button
                         onClick={() => signOut()}
+                        id="logout"
                         className="flex h-10 items-center gap-2 rounded-lg border cursor-pointer border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-accent"
                     >
                         <svg
@@ -144,13 +155,14 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                             </h2>
                             <Link
                                 href="/account/create-poll"
+                                id="create-poll"
                                 className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                             >
                                 Vytvořit anketu
                             </Link>
                         </div>
 
-                        <div className="space-y-3">
+                        <div className="space-y-3" id="polls">
                             {user.polls.length === 0 && (
                                 <p className="text-sm text-muted-foreground">
                                     Ještě jste nevytvořili žádné ankety.
@@ -258,6 +270,7 @@ export default function AccountSettings({ user }: { user: UserFullType }) {
                         </p>
                         <button
                             onClick={handleDelete}
+                            id="delete-acc"
                             className="h-10 rounded-lg cursor-pointer border border-destructive bg-destructive/10 px-6 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground"
                         >
                             Smazat účet
